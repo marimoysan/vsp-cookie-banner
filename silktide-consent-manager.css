@@ -567,3 +567,67 @@
     transform: translate(0px, 0px);
   }
 }
+
+/* ---------------------------
+   Nuevas clases sin h1/fieldset/legend
+---------------------------- */
+
+/* Header del modal */
+#silktide-modal .silktide-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+/* Título del modal (antes h1) */
+#silktide-modal .silktide-modal-title {
+  font-family: var(--fontFamily);
+  color: var(--textColor);
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0px;
+}
+
+/* Grupo de tipo de cookie (antes fieldset) */
+#silktide-modal .cookie-type-group {
+  padding: 0px;
+  border: none;
+  margin: 0px 0px 32px;
+}
+
+#silktide-modal .cookie-type-group:last-of-type {
+  margin: 0px;
+}
+
+/* Título del tipo de cookie (antes legend) */
+#silktide-modal .cookie-type-title {
+  padding: 0px;
+  margin: 0px 0px 10px;
+  font-weight: 700;
+  color: var(--textColor);
+  font-size: 16px;
+}
+
+/* Footer del modal (por si cambiamos de <footer> a <div>) */
+#silktide-modal .silktide-modal-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+@media (min-width: 600px) {
+  #silktide-modal .silktide-modal-footer {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+#silktide-modal .silktide-modal-footer a {
+  margin-left: auto;
+  padding: 14px 0px;
+}
+
+
