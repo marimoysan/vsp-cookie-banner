@@ -370,103 +370,116 @@ class SilktideCookieBanner {
   // ----------------------------------------------------------------
   // Modal
   // ----------------------------------------------------------------
+
   getModalContent() {
     const preferencesTitle =
       this.config.text?.preferences?.title || 'Customize your cookie preferences';
-    
+
     const preferencesDescription =
       this.config.text?.preferences?.description ||
       "<p>We respect your right to privacy. You can choose not to allow some types of cookies. Your cookie preferences will apply across our website.</p>";
-    
-    // Preferences button
+
+    // Preferences button (para accesibilidad del botón de cerrar / icono)
     const preferencesButtonLabel = this.config.text?.banner?.preferencesButtonAccessibleLabel;
 
-    const closeModalButton = `<button class="modal-close"${preferencesButtonLabel ? ` aria-label="${preferencesButtonLabel}"` : ''}>
+    const closeModalButton = `<button class="modal-close"${
+      preferencesButtonLabel ? ` aria-label="${preferencesButtonLabel}"` : ''
+    }>
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M19.4081 3.41559C20.189 2.6347 20.189 1.36655 19.4081 0.585663C18.6272 -0.195221 17.3591 -0.195221 16.5782 0.585663L10 7.17008L3.41559 0.59191C2.6347 -0.188974 1.36655 -0.188974 0.585663 0.59191C-0.195221 1.37279 -0.195221 2.64095 0.585663 3.42183L7.17008 10L0.59191 16.5844C-0.188974 17.3653 -0.188974 18.6335 0.59191 19.4143C1.37279 20.1952 2.64095 20.1952 3.42183 19.4143L10 12.8299L16.5844 19.4081C17.3653 20.189 18.6335 20.189 19.4143 19.4081C20.1952 18.6272 20.1952 17.3591 19.4143 16.5782L12.8299 10L19.4081 3.41559Z"/>
       </svg>
     </button>`;
-    
 
     const cookieTypes = this.config.cookieTypes || [];
     const acceptedCookieMap = this.getAcceptedCookies();
 
     // Accept button
-    const acceptAllButtonText = this.config.text?.banner?.acceptAllButtonText || 'Accept all';
-    const acceptAllButtonLabel = this.config.text?.banner?.acceptAllButtonAccessibleLabel;
+    const acceptAllButtonText =
+      this.config.text?.banner?.acceptAllButtonText || 'Accept all';
+    const acceptAllButtonLabel =
+      this.config.text?.banner?.acceptAllButtonAccessibleLabel;
     const acceptAllButton = `<button class="preferences-accept-all st-button st-button--primary"${
-      acceptAllButtonLabel && acceptAllButtonLabel !== acceptAllButtonText 
-        ? ` aria-label="${acceptAllButtonLabel}"` 
+      acceptAllButtonLabel && acceptAllButtonLabel !== acceptAllButtonText
+        ? ` aria-label="${acceptAllButtonLabel}"`
         : ''
     }>${acceptAllButtonText}</button>`;
-    
+
     // Reject button
-    const rejectNonEssentialButtonText = this.config.text?.banner?.rejectNonEssentialButtonText || 'Reject non-essential';
-    const rejectNonEssentialButtonLabel = this.config.text?.banner?.rejectNonEssentialButtonAccessibleLabel;
-    const rejectNonEssentialButton = `<button class="preferences-reject-all st-button st-button--primary"${
-      rejectNonEssentialButtonLabel && rejectNonEssentialButtonLabel !== rejectNonEssentialButtonText 
-        ? ` aria-label="${rejectNonEssentialButtonLabel}"` 
-        : ''
-    }>${rejectNonEssentialButtonText}</button>`;
-    
-    // Credit link
-     // const creditLinkText = this.config.text?.preferences?.creditLinkText || 'Get this banner for free';
-  //    const creditLinkAccessibleLabel = this.config.text?.preferences?.creditLinkAccessibleLabel;
-  //    const creditLink = `<a href="https://silktide.com/consent-manager" target="_blank" rel="noreferrer"${
-   //     creditLinkAccessibleLabel && creditLinkAccessibleLabel !== creditLinkText
-   //       ? ` aria-label="${creditLinkAccessibleLabel}"`
- //         : ''
- //     }>${creditLinkText}</a>`;
-    
-    
+    const rejectNonEssentialButtonText =
+      this.config.text?.banner?.rejectNonEssentialButtonText || 'Reject non-essential';
+    const rejectNonEssentialButtonLabel =
+      this.config.text?.banner?.rejectNonEssentialButtonAccessibleLabel;
+    const rejectNonEssentialButton =
+      `<button class="preferences-reject-all st-button st-button--primary"${
+        rejectNonEssentialButtonLabel &&
+        rejectNonEssentialButtonLabel !== rejectNonEssentialButtonText
+          ? ` aria-label="${rejectNonEssentialButtonLabel}"`
+          : ''
+      }>${rejectNonEssentialButtonText}</button>`;
+
+    // Enlace de crédito (opcional)
+    const creditLinkText = this.config.text?.preferences?.creditLinkText;
+    const creditLinkAccessibleLabel =
+      this.config.text?.preferences?.creditLinkAccessibleLabel;
+    const creditLink = creditLinkText
+      ? `<a href="https://silktide.com/consent-manager" target="_blank" rel="noreferrer"${
+          creditLinkAccessibleLabel &&
+          creditLinkAccessibleLabel !== creditLinkText
+            ? ` aria-label="${creditLinkAccessibleLabel}"`
+            : ''
+        }>${creditLinkText}</a>`
+      : '';
 
     const modalContent = `
-      <header>
-        <h1>${preferencesTitle}</h1>                    
+      <div class="silktide-modal-header">
+        <p class="silktide-modal-title">${preferencesTitle}</p>
         ${closeModalButton}
-      </header>
+      </div>
+
       ${preferencesDescription}
+
       <section id="cookie-preferences">
         ${cookieTypes
           .map((type) => {
             const accepted = acceptedCookieMap[type.id];
             let isChecked = false;
 
-            // if it's accepted then show as checked
+            // si está aceptada, se marca
             if (accepted) {
               isChecked = true;
             }
 
-            // if nothing has been accepted / rejected yet, then show as checked if the default value is true
+            // si aún no ha elegido nada, se usa defaultValue
             if (!accepted && !this.hasSetInitialCookieChoices()) {
               isChecked = type.defaultValue;
             }
 
             return `
-            <fieldset>
-                <legend>${type.name}</legend>
+              <div class="cookie-type-group">
+                <p class="cookie-type-title">${type.name}</p>
                 <div class="cookie-type-content">
-                    <div class="cookie-type-description">${type.description}</div>
-                    <label class="switch" for="cookies-${type.id}">
-                        <input type="checkbox" id="cookies-${type.id}" ${
-              type.required ? 'checked disabled' : isChecked ? 'checked' : ''
-            } />
-                        <span class="switch__pill" aria-hidden="true"></span>
-                        <span class="switch__dot" aria-hidden="true"></span>
-                        <span class="switch__off" aria-hidden="true">Off</span>
-                        <span class="switch__on" aria-hidden="true">On</span>
-                    </label>
+                  <div class="cookie-type-description">${type.description}</div>
+                  <label class="switch" for="cookies-${type.id}">
+                      <input type="checkbox" id="cookies-${type.id}" ${
+                        type.required ? 'checked disabled' : isChecked ? 'checked' : ''
+                      } />
+                      <span class="switch__pill" aria-hidden="true"></span>
+                      <span class="switch__dot" aria-hidden="true"></span>
+                      <span class="switch__off" aria-hidden="true">Off</span>
+                      <span class="switch__on" aria-hidden="true">On</span>
+                  </label>
                 </div>
-            </fieldset>
-        `;
+              </div>
+            `;
           })
           .join('')}
       </section>
-      <footer>
+
+      <div class="silktide-modal-footer">
         ${acceptAllButton}
         ${rejectNonEssentialButton}
         ${creditLink}
-      </footer>
+      </div>
     `;
 
     return modalContent;
